@@ -6,27 +6,131 @@
 // denoted by n!, is the product of all positive integers less than or equal to n.
 // Example: 5! = 5 x 4 x 3 x 2 x 1 = 120
 // factorial(5); // 120
+/*
+I - a number
+O - the number factorial
+C - Use recursion
+E - If n is negative or zero
+Pseudo Code
+  If n is negative, return null
+  If n is zero, return 1
+  Return n * factorial of n - 1
+*/
 var factorial = function(n) {
+  if (n < 0) {
+    return null;
+  }
+  // Base Case
+  if (n === 0) {
+    return 1;
+  } else { // Recursive Case
+    return n * factorial(n - 1);
+  }
 };
 
 // 2. Compute the sum of an array of integers.
 // sum([1,2,3,4,5,6]); // 21
+/*
+I - An array of numbers
+O - The sum of all numbers in array
+C - Use recursion
+E - If array is empty, or not an array
+Pseudo Code
+  If array is empty, return 0
+  Create copy of input array
+    If array copy has only one value, return first value
+  Return popped value + recursive call on copy array
+*/
 var sum = function(array) {
+  // Edge Case for empty input array
+  if (array.length === 0) {
+    return 0;
+  }
+  var arrayCopy = array.slice();
+  // Base Case to return the first element when array has only one value
+  if (array.length === 1) {
+    return array[0];
+  }
+  // Recursive Case to return the sum function added to last value pop
+  return arrayCopy.pop() + sum(arrayCopy);
 };
 
 // 3. Sum all numbers in an array containing nested arrays.
 // arraySum([1,[2,3],[[4]],5]); // 15
+/*
+I - An array containing numbers and/or arrays
+O - The sum of all numbers in array(s)
+C - Only use recursion
+E - If array is empty, or not an array
+Pseudo Code
+  If array is empty, return 0
+  Create a copy of array excluding the first value
+  Check if first value in array is type number
+    Return first element + recursive call on slice copy
+  Check if first value is type array
+    Return recursive call on first element + recursive call on slice copy
+*/
 var arraySum = function(array) {
+  // Edge case for empty input array
+  if (array.length === 0) {
+    return 0;
+  }
+  var nextSlice = array.slice(1);
+  // Check if first value is type number or array
+  if (typeof array[0] === 'number') {
+    return array[0] + arraySum(nextSlice);
+  } else {
+    return arraySum(array[0]) + arraySum(nextSlice);
+  }
 };
 
 // 4. Check if a number is even.
+/*
+I - An integer
+O - A boolean
+C - Only use recursion
+E - Number is not an integer or number type
+Pseudo Code
+  Convert n to a postive value
+  If n is zero, return true because the number is divisible by two
+  If n is one, return false because the number is not divisible by two
+  Return recursive call on n - 2
+*/
 var isEven = function(n) {
+  n = Math.abs(n);
+  if (n === 0) { // Base Case 1 when n is even
+    return true
+  } else if (n === 1) { // Base Case 2 when n is odd
+    return false
+  }
+  // Recursive Case
+  return isEven(n - 2);
 };
 
 // 5. Sum all integers below a given integer.
 // sumBelow(10); // 45
 // sumBelow(7); // 21
+/*
+I - An integer
+O - The sum of all integers below the input number exclusive
+C - Only use recursion
+E - Number is not an integer or number type
+Pseudo Code
+  If n is zero, return 0
+  If n is positive, return n -1 + recursive call on n - 1
+  If n is negative, return n + 1 + recursvie call on n + 1
+*/
 var sumBelow = function(n) {
+  // Base Case and edge case when n is zero
+  if (n === 0) {
+    return 0;
+  }
+  // Recursive Case 1 when n is positive
+  if (n > 0) {
+    return (n - 1) + sumBelow(n - 1);
+  } else { // Recursive Case 2 when n is negative
+    return (n + 1) + sumBelow(n + 1);
+  }
 };
 
 // 6. Get the integers within a range (x, y).
