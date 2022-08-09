@@ -300,31 +300,23 @@ var palindrome = function(string) {
 // modulo(5,2) // 1
 // modulo(17,5) // 2
 // modulo(22,6) // 4
+/*
+I - Two integers
+O - One integer, the remainder of the two input integers
+C - Only use recursion
+E - When either numbers are negative, when the first number is greater than the second
+Pseudo Code
+  Check edge case when x is zero or x is equal to y to return zero
+  Check edge case when y is zero which is illegal math so return NaN
+  Check boundary conditions when x is positive and less than y, i.e. mod(0, 32) = 0 or mod(78, 453) = 78
+  Check boundary conditions when x is negative and greater than y, i.e. mod(-275, -502) = -275
+*/
 var modulo = function(x, y) {
-
-  if ((y > x) || (y < x) && (y < 0) && (x < 0)) {
-    return x;
-  } else if (x === 0 && y === 0) {
-    return NaN;
-  }
-
-  var diff = x - y;
-  if (diff < y) {
-    return diff;
-  }
-  return modulo(diff, y);
 };
 
 // 12. Write a function that multiplies two numbers without using the * operator or
 // Math methods.
 var multiply = function(x, y) {
-  if (x === 0 || y === 0) {
-    return 0;
-  }
-  if (y === 1) {
-    return x;
-  }
-  return x + multiply(x, y - 1);
 };
 
 // 13. Write a function that divides two numbers without using the / operator or
@@ -392,12 +384,62 @@ var countKeysInObj = function(obj, key) {
 // var obj = {'e':{'x':'y'},'t':{'r':{'e':'r'},'p':{'y':'r'}},'y':'e'};
 // countValuesInObj(obj, 'r') // 2
 // countValuesInObj(obj, 'e') // 1
+/*
+I - An object and a value
+O - A count integer
+C - Only use recursion
+E - Empty object, nested objects or non-object data types
+Pseudo Code
+  Create counter
+  Traverse through input object
+    Store current value in variable
+    Check if value is an object
+      Invoke recursive call on the nested object
+    Otherwise if value matches the second argument
+      Increment counter
+  Return counter
+*/
 var countValuesInObj = function(obj, value) {
+  var counter = 0;
+  for (var key in obj) {
+    var currProperty = obj[key];
+    if (typeof currProperty === 'object') {
+      counter += countValuesInObj(currProperty, value);
+    } else if (currProperty === value) {
+      counter++;
+    }
+  }
+  return counter;
 };
 
 // 24. Find all keys in an object (and nested objects) by a provided name and rename
 // them to a provided new name while preserving the value stored at that key.
+/*
+I - An object, an old key and a new key
+O - Return object
+C - Only use recursion
+E - Empty object, nested objects or non-object data types
+Pseudo Code
+  Traverse through input object
+    Store current value in variable
+    Check if current key matches old key
+      Create new property with new key and set to current value
+      Delete old property at old key
+    Check if current value is type object
+      Invoke recursive call on nested object with new arugments
+  Return object
+*/
 var replaceKeysInObj = function(obj, oldKey, newKey) {
+  for(var key in obj) {
+    var currProperty = obj[key];
+    if (key === oldKey) {
+      obj[newKey] = currProperty;
+      delete obj[key];
+    } else if (typeof currProperty === 'object') {
+      replaceKeysInObj(currProperty, oldKey, newKey);
+    }
+  }
+  return obj;
 };
 
 // 25. Get the first n Fibonacci numbers. In the Fibonacci sequence, each subsequent
