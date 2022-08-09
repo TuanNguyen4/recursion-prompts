@@ -135,7 +135,40 @@ var sumBelow = function(n) {
 
 // 6. Get the integers within a range (x, y).
 // range(2,9); // [3,4,5,6,7,8]
+/*
+I - Two integers, depicting the range
+O - An array of numbers between the two integers exlcusive
+C - Only use recursion
+E - Both numbers are the same, or have a weird range like (7, 2)
+Pseudo Code
+  Check base and boudary case for when x equal y or x is within y by one
+    Return empty array
+  If x is less than y, increment x by 1
+  Otherwise, decrement x by 1
+  Store the value above in an array
+  Return the above array concat with recursvie call using the new x and the original y
+*/
 var range = function(x, y) {
+  // Check base condition when x is plus-minus one of y or when x equals y
+  if(x === y || x === y + 1 || x === y - 1) {
+    return [];
+  }
+  if (x < y) { // If normal range where x is smaller than y
+    var incrementX = x + 1;
+  } else { // If abnormal range where x is greater than y
+    var incrementX = x - 1;
+  }
+  return [incrementX].concat( range(incrementX, y) );
+  /*
+  Old code before refactor
+  if (x < y) {
+    var result = [x + 1];
+    return result.concat(range(x + 1, y));
+  } else {
+    var result = [x - 1];
+    return result.concat(range(x - 1, y));
+  }
+  */
 };
 
 // 7. Compute the exponent of a number.
@@ -143,22 +176,123 @@ var range = function(x, y) {
 // 8^2 = 8 x 8 = 64. Here, 8 is the base and 2 is the exponent.
 // exponent(4,3); // 64
 // https://www.khanacademy.org/computing/computer-science/algorithms/recursive-algorithms/a/computing-powers-of-a-number
+/*
+I - Two integers, a base and an exponent
+O - Return the base raised to the exponent
+C - Only use recursion
+E - When base and/or exponent is 0 or either numbers are float
+Pseudo Code
+  Check if exponent is negative
+    Set flag to true
+    Convert negative exponent to positive
+  If exponent is one, return base
+  If exponent is zero, return one
+  Create result variable set to recursive call * base
+  If negative exponent flag is true
+    Return the inverse of result
+  Otherwise
+    Return the result
+*/
 var exponent = function(base, exp) {
+  // Check if exponent is negative
+  if (exp < 0) {
+    var negativeExp = true;
+    exp = (-1) * exp;
+  }
+  // Base Cases when exp is 0 or 1
+  if (exp === 0) {
+    return 1;
+  } else if (exp === 1) {
+    return base;
+  }
+  // Recursive Case
+  var result = base * exponent(base, (exp - 1));
+  if (negativeExp) {
+    return 1/result;
+  } else {
+    return result;
+  }
 };
 
 // 8. Determine if a number is a power of two.
 // powerOfTwo(1); // true
 // powerOfTwo(16); // true
 // powerOfTwo(10); // false
+/*
+I - An integer
+O - A boolean
+C - Only use recursion
+E - When n is not a power of 2, or n equals zero
+Pseudo Code
+  Check base case when n is 1 to return true
+  Check if n is zero or n is odd to return false
+  Return recursive call with n divided by 2 as argument
+*/
 var powerOfTwo = function(n) {
+  if (n === 1) { // Check base case when n is one
+    return true;
+  } else if (n === 0 || n % 2 === 1) { // When n would fail being a power of 2
+    return false;
+  }
+  // Recursive Case to repeatedly divide n by 2
+  return powerOfTwo(n / 2);
 };
 
 // 9. Write a function that reverses a string.
+/*
+I - A string
+O - The string reversed
+C - Only use recursion
+E - When string is empty
+Pseudo Code
+  Check for empty string to return it
+  Check for base case when string has one character
+  Create variable to store last index of string
+  Return character at last index concat with recursive call of string slice excluding last char
+*/
 var reverse = function(string) {
+  if (string.length === 0) {
+    return '';
+  } else if (string.length === 1) {
+    return string;
+  }
+  var lastChar = string.length - 1;
+  return string[lastChar] + reverse(string.slice(0, lastChar));
 };
 
 // 10. Write a function that determines if a string is a palindrome.
+/*
+I - A string
+O - A boolean
+C - Only use recursion
+E - When string is empty or has spaces
+Pseudo Code
+  Split string at spaces and joined together
+  Check if string length is zero or one to return true
+  Store first character and convert to lower case
+  Store last character and convert to lower case
+  If first and last character are equal
+    Return recursive call with string slice removing the first and last char
+  Otherwise return false
+*/
 var palindrome = function(string) {
+  // Remove spaces from string and joined together
+  var splitSpaces = string.split(' ');
+  string = splitSpaces.join('');
+  var strLength = string.length
+  // Base case when string has one or zero character left
+  if (strLength === 0 || strLength === 1) {
+    return true;
+  }
+  // Store lowercase first and last character of the string to check if they are the same
+  var firstChar = string[0].toLowerCase();
+  var lastChar = string[strLength - 1].toLowerCase();
+  if (firstChar === lastChar) {
+    var removeFirstAndLastChar = string.slice(1, (strLength - 1));
+    return palindrome(removeFirstAndLastChar);
+  } else { // If not the same, then string is not a palindrome
+    return false
+  }
 };
 
 // 11. Write a function that returns the remainder of x divided by y without using the
@@ -167,11 +301,30 @@ var palindrome = function(string) {
 // modulo(17,5) // 2
 // modulo(22,6) // 4
 var modulo = function(x, y) {
+
+  if ((y > x) || (y < x) && (y < 0) && (x < 0)) {
+    return x;
+  } else if (x === 0 && y === 0) {
+    return NaN;
+  }
+
+  var diff = x - y;
+  if (diff < y) {
+    return diff;
+  }
+  return modulo(diff, y);
 };
 
 // 12. Write a function that multiplies two numbers without using the * operator or
 // Math methods.
 var multiply = function(x, y) {
+  if (x === 0 || y === 0) {
+    return 0;
+  }
+  if (y === 1) {
+    return x;
+  }
+  return x + multiply(x, y - 1);
 };
 
 // 13. Write a function that divides two numbers without using the / operator or
