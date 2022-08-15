@@ -304,24 +304,172 @@ var palindrome = function(string) {
 I - Two integers
 O - One integer, the remainder of the two input integers
 C - Only use recursion
-E - When either numbers are negative, when the first number is greater than the second
+E - When either numbers are negative, when the first number is greater than the second, when y is 0
 Pseudo Code
-  Check edge case when x is zero or x is equal to y to return zero
-  Check edge case when y is zero which is illegal math so return NaN
-  Check boundary conditions when x is positive and less than y, i.e. mod(0, 32) = 0 or mod(78, 453) = 78
-  Check boundary conditions when x is negative and greater than y, i.e. mod(-275, -502) = -275
+  Create sign flag to keep track of if x is negative
+  If x is negative
+    Toggle sign flag
+    Set x to be positve
+  If y is negative
+    Set y to be positive
+
+  Check edge cases first
+  If y is 0, return NaN (can't divdie by zero)
+  If x is 0 or x equals y, return 0
+
+  Check base cases
+  If x < y,
+    If sign is positive
+      Return x
+    Otherwise
+      Return -x
+  Create result variable and invoke recursive function with x - y as first argument
+  If positive flag is true
+    Return result
+  Otherwise
+    Return -result
+
 */
 var modulo = function(x, y) {
+  var isPos = true;
+  if(x < 0) {
+    isPos = !isPos;
+    x = -x;
+  }
+  if (y < 0) {
+    y = -y;
+  }
+
+  if (y === 0) {
+    return NaN;
+  }
+  if (x === 0 || x === y) {
+    return 0;
+  }
+
+  if (x < y) {
+    if (isPos) {
+      return x
+    } else {
+      return -x;
+    }
+  }
+
+  var result =  modulo(x - y, y);
+  if (isPos) {
+    return result;
+  } else {
+    return -result;
+  }
 };
 
 // 12. Write a function that multiplies two numbers without using the * operator or
 // Math methods.
+/*
+I - Two integers
+O - The product of the two integers
+C - Only use recursion
+E - When either numbers are negative or when both are negative
+Pseudo Code
+  Create sign flag to keep track of sign of final result
+  If x is negative
+    Toggle sign flag
+    Set x to be positve
+  If y is negative
+    Toggle sign flag
+    Set y to be positive
+
+  Check edge and base cases first
+  If either x or y are 0, return 0
+  If y is 1, return x
+
+  Create result variable set to x + recursive function with y - 1 as second argument
+  If positive flag is true
+    Return result
+  Otherwise
+    Return -result
+*/
 var multiply = function(x, y) {
+  var isPos = true;
+  if (x < 0) {
+    isPos = !isPos;
+    x = -x;
+  }
+  if (y < 0) {
+    isPos = !isPos;
+    y = -y;
+  }
+
+  if(x === 0 || y === 0) {
+    return 0
+  }
+  if (y === 1) {
+    return x;
+  }
+
+  var result = x + multiply(x , y - 1);
+  if (isPos) {
+    return result;
+  } else {
+    return -result;
+  }
+
 };
 
 // 13. Write a function that divides two numbers without using the / operator or
 // Math methods to arrive at an approximate quotient (ignore decimal endings).
+/*
+I - Two integers
+O - The quotient
+C - Only use recursion
+E - When either numbers are negative or when both are negative
+Pseudo Code
+  Create sign flag to keep track of sign of final result
+  If x is negative
+    Toggle sign flag
+    Set x to be positve
+  If y is negative
+    Toggle sign flag
+    Set y to be positive
+
+  Check edge and base cases first
+  If y = 0, return NaN
+  If x = 0 or x < y, return 0
+  If x = y, return 1
+
+  Create result variable set to 1 + recursive function with x - 1 as first argument
+  If positive flag is true
+    Return result
+  Otherwise
+    Return -result
+*/
 var divide = function(x, y) {
+  var isPos = true;
+  if (x < 0) {
+    isPos = !isPos;
+    x = -x;
+  }
+  if (y < 0) {
+    isPos = !isPos;
+    y = -y;
+  }
+
+  if(y === 0) {
+    return NaN;
+  }
+  if (x === 0 || x < y) {
+    return 0;
+  }
+  if (x === y) {
+    return 1;
+  }
+
+  var result = divide(x - y, y) + 1;
+  if (isPos) {
+    return result;
+  } else {
+    return -result;
+  }
 };
 
 // 14. Find the greatest common divisor (gcd) of two positive numbers. The GCD of two
@@ -329,29 +477,135 @@ var divide = function(x, y) {
 // gcd(4,36); // 4
 // http://www.cse.wustl.edu/~kjg/cse131/Notes/Recursion/recursion.html
 // https://www.khanacademy.org/computing/computer-science/cryptography/modarithmetic/a/the-euclidean-algorithm
+/*
+I - Two integers
+O - An integer that is the greatest common divisor
+C - Only use recursion
+E - When either numbers are negative or when both are negative, when there is no gcd between the numbers
+Pseudo Code
+  Check edge cases
+  If either x or y are negative, return null
+  If x = y, return x
+  If x > y
+    Return recursive function with x - y as first argument
+  If x < y
+    Return recrusive function with y - x as second argument
+*/
 var gcd = function(x, y) {
+  if (x < 0 || y < 0) {
+    return null;
+  }
+  if (x === y) {
+    return x;
+  }
+  if ( x > y) {
+    return gcd(x - y, y);
+  }
+  if (x < y) {
+    return gcd(x, y - x);
+  }
+
 };
 
 // 15. Write a function that compares each character of two strings and returns true if
 // both are identical.
 // compareStr('house', 'houses') // false
 // compareStr('tomato', 'tomato') // true
+/*
+I - Two strings
+O - A boolean
+C - Only use recursion
+E - Empty strings, when there's capital letters invovled
+Pseudo Code
+  Base case
+  If length of both string is 0, return true
+  Recursive case
+  If first char of both string are equal
+    Return recursive function with both strings sliced at index 1 to check the next character
+  Otherwise
+    Return false
+*/
 var compareStr = function(str1, str2) {
+  if (str1.length === 0 && str2.length === 0) {
+    return true;
+  }
+  if (str1[0] === str2[0]){
+    return compareStr(str1.slice(1), str2.slice(1));
+  } else {
+    return false;
+  }
 };
 
 // 16. Write a function that accepts a string and creates an array where each letter
 // occupies an index of the array.
+/*
+I - A string
+O - An array of each string char in the array
+C - Only use recursion
+E - Empty string, or non string type
+Pseudo Code
+  Base case
+  If length of string is zero
+    Return empty array
+  Recursive case
+  Create empty array and store first char in it
+  Return empty array concat with recursive function with string sliced at index 1
+*/
 var createArray = function(str) {
+  if (str.length === 0) {
+    return [];
+  }
+  var result = [str[0]];
+  return result.concat(createArray(str.slice(1)));
 };
 
 // 17. Reverse the order of an array
+/*
+I - An array
+O - An array of the elements in reverse order
+C - Only use recursion
+E - Empty array, or non array type
+Pseudo Code
+  Base case
+  If length of array is zero
+    Return empty array
+  Recursive case
+  Create variable to store last index of array
+  Create results array and store last element in it
+  Return results array concat with recursive function with string sliced from index 0 to last index
+*/
 var reverseArr = function(array) {
+  var arrayLen = array.length;
+  if (arrayLen === 0) {
+    return [];
+  }
+  var lastElement = arrayLen - 1;
+  var results = [array[lastElement]];
+  return results.concat(reverseArr(array.slice(0,lastElement)))
 };
 
 // 18. Create a new array with a given value and length.
 // buildList(0,5) // [0,0,0,0,0]
 // buildList(7,3) // [7,7,7]
+/*
+I - Two integers
+O - An array consisting of the value repeated length times
+C - Only use recursion
+E - Non number inputs, negative number for length
+Pseudo Code
+  Base case
+  If length is zero
+    Return empty array
+  Recursive case
+  Create results array and store the input value in it
+  Return results array concat with recursive function with length - 1 as second argument
+*/
 var buildList = function(value, length) {
+  if (length === 0) {
+    return [];
+  }
+  var results = [value];
+  return results.concat(buildList(value, length - 1));
 };
 
 // 19. Implement FizzBuzz. Given integer n, return an array of the string representations of 1 to n.
@@ -359,25 +613,127 @@ var buildList = function(value, length) {
 // For multiples of five, output 'Buzz' instead of the number.
 // For numbers which are multiples of both three and five, output “FizzBuzz” instead of the number.
 // fizzBuzz(5) // ['1','2','Fizz','4','Buzz']
+/*
+I - An integer
+O - An array consisting of the value repeated length times
+C - Only use recursion
+E - Non number inputs, negative number for length
+Pseudo Code
+  Base case
+  If n is zero
+    Return empty array
+
+  Recursive case
+  Create div3 flag if n is divisible by 3
+  Create div5 flag if n is divisible by 5
+  Create results array
+  If div3 and div5
+    Push 'FizzBuzz' to results
+  Else if div5
+    Push 'Buzz' to results
+  Else if div3
+    Push 'Fizz' to results
+  Otherwise
+    Push n to results
+  Return recursive function with n - 1 concat with results array
+*/
 var fizzBuzz = function(n) {
+  if (n === 0) {
+    return [];
+  }
+  var result = [];
+  var div5 = n % 5 === 0;
+  var div3 = n % 3 === 0;
+  if (div3 && div5) {
+    result.push('FizzBuzz');
+  } else if (div5) {
+    result.push('Buzz');
+  } else if (div3) {
+    result.push('Fizz');
+  } else {
+    result.push(n.toString());
+  }
+ // return result.concat(fizzBuzz(n - 1)) // Build fizzbuzz array in reverse order
+ return (fizzBuzz(n - 1)).concat(result);
 };
 
 // 20. Count the occurrence of a value in a list.
 // countOccurrence([2,7,4,4,1,4], 4) // 3
 // countOccurrence([2,'banana',4,4,1,'banana'], 'banana') // 2
+/*
+I - An array and a value
+O - A counter to count the number of times value appears in array
+C - Only use recursion
+E - Non array input, non number value
+Pseudo Code
+  Base case
+  If array length is zero
+    Return 0
+  Recursive case
+  Create counter variable and set to zero
+  If first element matches value
+    Increment counter by one
+  Return counter + recursive call with array sliced at index 1 as first argument
+*/
 var countOccurrence = function(array, value) {
+  if(array.length === 0) {
+    return 0;
+  }
+  var count = 0;
+  if (array[0] === value) {
+    count++;
+  }
+  return count += countOccurrence(array.slice(1), value)
 };
 
 // 21. Write a recursive version of map.
 // rMap([1,2,3], timesTwo); // [2,4,6]
 var rMap = function(array, callback) {
+  if (array.length === 0) {
+    return [];
+  }
+
+  var result = rMap(array.slice(1), callback);
+  result.unshift(callback(array[0]));
+  return result
 };
+/*
+  var result = [];
+  result.push(callback[array[0]]);
+  return result.concat(rMap(array.slice(1), callback));
+*/
 
 // 22. Write a function that counts the number of times a key occurs in an object.
 // var obj = {'e':{'x':'y'},'t':{'r':{'e':'r'},'p':{'y':'r'}},'y':'e'};
 // countKeysInObj(obj, 'r') // 1
 // countKeysInObj(obj, 'e') // 2
+/*
+I - An obj and a key
+O - A counter to count the number of times key appears in array
+C - Only use recursion
+E - Empty object, nested objects or non-object data types
+Pseudo Code
+  Create counter variable
+  Traverse through input object
+    Store current value in variable
+    If current value is type object
+      Return count + recursive call with current value as first argument
+    If key matches second argument
+      Increment counter
+  Return counter
+*/
 var countKeysInObj = function(obj, key) {
+  var counter = 0;
+  for (var key1 in obj) {
+    var currentValue = obj[key1];
+    if (typeof currentValue === 'object') {
+      counter += countKeysInObj(currentValue, key);
+    }
+    if (key1 === key) {
+      counter++
+    }
+  }
+  return counter;
 };
 
 // 23. Write a function that counts the number of times a value occurs in an object.
@@ -386,16 +742,16 @@ var countKeysInObj = function(obj, key) {
 // countValuesInObj(obj, 'e') // 1
 /*
 I - An object and a value
-O - A count integer
+O - A counter to count the number of times value appears in array
 C - Only use recursion
 E - Empty object, nested objects or non-object data types
 Pseudo Code
   Create counter
   Traverse through input object
     Store current value in variable
-    Check if value is an object
-      Invoke recursive call on the nested object
-    Otherwise if value matches the second argument
+    If current value is type object
+      Return count + recursive call with current value as first argument
+    If value matches second argument
       Increment counter
   Return counter
 */
@@ -405,7 +761,8 @@ var countValuesInObj = function(obj, value) {
     var currProperty = obj[key];
     if (typeof currProperty === 'object') {
       counter += countValuesInObj(currProperty, value);
-    } else if (currProperty === value) {
+    }
+    if (currProperty === value) {
       counter++;
     }
   }
@@ -461,12 +818,72 @@ var nthFibo = function(n) {
 // 27. Given an array of words, return a new array containing each word capitalized.
 // var words = ['i', 'am', 'learning', 'recursion'];
 // capitalizedWords(words); // ['I', 'AM', 'LEARNING', 'RECURSION']
+/*
+I - An array
+O - An array with all strings capitalized
+C - Only use recursion
+E - Empty array, non string data
+Pseudo Code
+  If array length is 0
+    Return empty array
+
+  Create results array
+  Create empty string variable
+  Store first element in array
+  Iterate over first element
+    Concat empty string with current char capitalized
+  Push string to results array
+  Return results array concat with recursive call with array sliced at index 1 as first argument
+*/
 var capitalizeWords = function(array) {
-};
+  if (array.length === 0) {
+    return [];
+  }
+  var result = [];
+  var capitalStr = "";
+  var firstStr = array[0];
+  for (var i = 0; i < firstStr.length; i++) {
+    capitalStr += firstStr[i].toUpperCase();
+  }
+  result.push(capitalStr);
+  return result.concat(capitalizeWords(array.slice(1)));
+  };
 
 // 28. Given an array of strings, capitalize the first letter of each index.
 // capitalizeFirst(['car','poop','banana']); // ['Car','Poop','Banana']
+/*
+I - An array
+O - An array with all strings capitalized
+C - Only use recursion
+E - Empty array, non string data
+Pseudo Code
+  If array length is 0
+    Return empty array
+
+  Create results array
+  Create empty string variable
+  Store first element in array
+  Iterate over first element
+    Concat empty string with current char capitalized
+  Push string to results array
+  Return results array concat with recursive call with array sliced at index 1 as first argument
+*/
 var capitalizeFirst = function(array) {
+  if (array.length === 0) {
+    return [];
+  }
+  var result = [];
+  var capitalStr = "";
+  var firstStr = array[0];
+  for (var i = 0; i < firstStr.length; i++) {
+    if (i === 0) {
+      capitalStr += firstStr[i].toUpperCase();
+    } else {
+      capitalStr += firstStr[i];
+    }
+  }
+  result.push(capitalStr);
+  return result.concat(capitalizeFirst(array.slice(1)));
 };
 
 // 29. Return the sum of all even numbers in an object containing nested objects.
@@ -478,7 +895,33 @@ var capitalizeFirst = function(array) {
 //   e: {e: {e: 2}, ee: 'car'}
 // };
 // nestedEvenSum(obj1); // 10
+/*
+I - An object containing nested objects
+O - A sum integer
+C - Only use recursion
+E - An object containg multiple nested objects
+Pseudo Code
+  Create counter variable
+  Iterate over input object
+    Store current property
+    If current property is type object
+      Set counter to recursive call with current property as its first argument
+    If current property is even
+      Increment sum by current property
+  Return sum
+*/
 var nestedEvenSum = function(obj) {
+  var sum = 0;
+  for (var key in obj) {
+    var currentProperty = obj[key];
+    if (typeof currentProperty === 'object') {
+      sum += nestedEvenSum(currentProperty);
+    }
+    if (currentProperty % 2 === 0) {
+      sum += currentProperty;
+    }
+  }
+  return sum;
 };
 
 // 30. Flatten an array containing nested arrays.
